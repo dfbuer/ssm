@@ -1,0 +1,5 @@
+0:0:0:0:0:0:0:1 - - [27/Jul/2022:17:32:58 +0800] "GET / HTTP/1.1" 200 278 http-bio-80-exec-1 243
+0:0:0:0:0:0:0:1 - - [27/Jul/2022:17:33:00 +0800] "GET /employee/page/1 HTTP/1.1" 200 1936 http-bio-80-exec-3 379
+0:0:0:0:0:0:0:1 - - [27/Jul/2022:17:33:00 +0800] "GET /static/css/index_work.css HTTP/1.1" 404 1001 http-bio-80-exec-4 5
+0:0:0:0:0:0:0:1 - - [27/Jul/2022:17:33:01 +0800] "GET /employee/page/3 HTTP/1.1" 200 2055 http-bio-80-exec-5 10
+0:0:0:0:0:0:0:1 - - [27/Jul/2022:17:33:01 +0800] "GET /static/css/index_work.css HTTP/1.1" 404 1001 http-bio-80-exec-6 1
