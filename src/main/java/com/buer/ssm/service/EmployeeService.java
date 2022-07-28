@@ -20,4 +20,9 @@ public interface EmployeeService {
      */
     PageInfo<Employee> getEmployeePage(Integer pageNum);
 
+    /**
+     * 根据id删除用户信息
+     * @param id
+     */
+    void deleteById(Integer id);
 }

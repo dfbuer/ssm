@@ -49,9 +49,9 @@ public class EmployeeController {
     }
 
 //    * 删除员工信息-->/employee/1-->delete
-//    @RequestMapping(value = "/employee/{id}", method = RequestMethod.DELETE)
-//    public String deleteById(Integer id){
-//        employeeService.deleteById(id);
-//        return "redirect:/employee_list";
-//    }
+    @RequestMapping(value = "/employee/delete/{id}", method = RequestMethod.GET)
+    public String deleteById(@PathVariable("id") Integer id){
+        employeeService.deleteById(id);
+        return "redirect:/employee/page/1";
+    }
 }

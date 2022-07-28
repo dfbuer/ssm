@@ -9,4 +9,8 @@
         select * from t_emp
     </select>
 
+<!--    void deleteById(Integer id);-->
+    <delete id="deleteById">
+        delete from t_emp where emp_id = #{id}
+    </delete>
 </mapper>
