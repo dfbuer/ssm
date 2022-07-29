@@ -33,9 +33,9 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param pageNum
      * @return
      */
-    public PageInfo<Employee> getEmployeePage(Integer pageNum) {
+    public PageInfo<Employee> getEmployeePage(Integer pageNum,Integer pageSize) {
 //        开启分页功能
-        PageHelper.startPage(pageNum,5);
+        PageHelper.startPage(pageNum,pageSize);
 //        查询所有员工信息
         List<Employee> list = employeeMapper.getAllEmployee();
 //        获取分页相关数据

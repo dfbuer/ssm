@@ -18,7 +18,7 @@ public interface EmployeeService {
      * @param pageNum
      * @return
      */
-    PageInfo<Employee> getEmployeePage(Integer pageNum);
+    PageInfo<Employee> getEmployeePage(Integer pageNum,Integer pageSize);
 
     /**
      * 根据id删除用户信息

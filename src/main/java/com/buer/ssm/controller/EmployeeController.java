@@ -28,16 +28,7 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
-    @RequestMapping(value = "/employee/page/{pageNum}", method = RequestMethod.GET)
-    public String getEmployeePage(@PathVariable("pageNum") Integer pageNum,Model model){
-//        获取员工分页信息
-        PageInfo<Employee> page = employeeService.getEmployeePage(pageNum);
-//        将分页数据共享到请求域中
-        model.addAttribute("page",page);
-        return "employee_list";
-    }
-
-//     * 查询所有员工信息-->/employee-->get
+    //     * 查询所有员工信息-->/employee-->get
     @RequestMapping(value = "/employee",method = RequestMethod.GET)
     public String getAllEmployee(Model model){
 //        查询所有员工信息
@@ -48,10 +39,25 @@ public class EmployeeController {
         return "employee_list";
     }
 
+    @RequestMapping(value = "/employee/page/{pageNum}/{pageSize}", method = RequestMethod.GET)
+    public String getEmployeePage(@PathVariable("pageNum") Integer pageNum,@PathVariable("pageSize") Integer pagesize, Model model){
+//        获取员工分页信息
+        PageInfo<Employee> page = employeeService.getEmployeePage(pageNum,pagesize);
+//        将分页数据共享到请求域中
+        model.addAttribute("page",page);
+        return "employee_list";
+    }
+
 //    * 删除员工信息-->/employee/1-->delete
     @RequestMapping(value = "/employee/delete/{id}", method = RequestMethod.GET)
     public String deleteById(@PathVariable("id") Integer id){
         employeeService.deleteById(id);
+        return "redirect:/employee/page/1";
+    }
+
+//     * 添加员工信息-->/employee-->post
+    @RequestMapping(value = "/employee",params = {"data"}, method = RequestMethod.POST)
+    public String insert(){
         return "redirect:/employee/page/1";
     }
 }

@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+      .el-header {
+        background-color: #B3C0D1;
+        color: #333;
+        line-height: 60px;
+      }
+
+      .el-aside {
+        color: #333;
+      }
+    </style>
+</head>
+<body>
+
+<div id="app">
+
+    <!--搜索表单-->
+    <el-form :inline="true" :model="person" class="demo-form-inline">
+
+
+      <el-form-item label="">
+        <el-input v-model="person.name" v-model="person.gender" v-model="person.age" v-model="person.college" v-model="person.major" v-model="person.remarks" v-model="person.grade" placeholder="人员检索"></el-input>
+      </el-form-item>
+
+      <el-form-item>
+        <el-button type="primary" @click="onSubmit">查询</el-button>
+      </el-form-item>
+    </el-form>
+
+    <!--按钮-->
+
+    <el-row>
+
+      <el-button type="danger" plain @click="deleteByIds">批量删除</el-button>
+      <el-button type="primary" plain @click="dialogVisible = true">新增</el-button>
+
+    </el-row>
+    <!--添加数据对话框表单-->
+    <el-dialog
+            title="编辑"
+            :visible.sync="dialogVisible"
+            width="30%"
+    >
+
+      <el-form ref="form" :model="person" label-width="80px">
+        <el-form-item label="姓名">
+          <el-input v-model="person.name"></el-input>
+        </el-form-item>
+
+        <el-form-item label="性别">
+          <el-input v-model="person.gender"></el-input>
+        </el-form-item>
+
+        <el-form-item label="年龄">
+          <el-input v-model="person.age"></el-input>
+        </el-form-item>
+
+        <el-form-item label="学院">
+          <el-input v-model="person.college"></el-input>
+        </el-form-item>
+
+        <el-form-item label="专业">
+          <el-input v-model="person.major"></el-input>
+        </el-form-item>
+
+        <el-form-item label="爱好">
+          <el-input type="textarea" v-model="person.hobby"></el-input>
+        </el-form-item>
+
+        <el-form-item label="想说的话">
+          <el-input v-model="person.remarks"></el-input>
+        </el-form-item>
+
+        <el-form-item label="年级">
+          <el-input v-model="person.remarks"></el-input>
+        </el-form-item>
+
+
+        <el-form-item>
+          <el-button type="primary" @click="addPerson">提交</el-button>
+          <el-button @click="dialogVisible = false">取消</el-button>
+        </el-form-item>
+      </el-form>
+
+    </el-dialog>
+
+
+    <!--修改数据对话框-->
+
+
+  <!--  详情和修改表单-->
+  <el-dialog
+          :data="detailedData"
+          title="详情"
+          :visible.sync="dialogVisible1"
+          width="30%"
+  >
+    <template slot-scope="scope">
+
+      <!-- 点击修改,弹出的表单 -->
+      <el-form ref="form" :model="detailedData" label-width="80px">
+
+        <el-form-item label="姓名" >
+          <el-input v-model="detailedData.name"></el-input>
+        </el-form-item>
+
+        <el-form-item label="性别">
+          <el-input v-model="detailedData.gender"></el-input>
+        </el-form-item>
+
+        <el-form-item label="年龄">
+          <el-input v-model="detailedData.age"></el-input>
+        </el-form-item>
+
+        <el-form-item label="学院">
+          <el-input v-model="detailedData.college"></el-input>
+        </el-form-item>
+
+        <el-form-item label="专业">
+          <el-input v-model="detailedData.major"></el-input>
+        </el-form-item>
+
+        <el-form-item label="爱好">
+          <el-input type="textarea" v-model="detailedData.hobby"></el-input>
+        </el-form-item>
+
+        <el-form-item label="想说的话">
+          <el-input v-model="detailedData.remarks"></el-input>
+        </el-form-item>
+
+        <el-form-item label="状态">
+
+          <!-- 根据模型变化状态  :active-value="1" 表示打开状态,    :inactive-value="0" 表示关闭状态  前面一定要加 :  -->
+          <el-switch v-model="detailedData.grade"  :active-value="1" :inactive-value="0">
+          </el-switch>
+
+        </el-form-item>
+
+        <el-form-item>
+          <el-button type="primary"  @click="updateTwo(scope.$index,scope.row)" v-show="ww">修改</el-button>
+          <el-button  @click="cancelUpdate" >关闭</el-button>
+        </el-form-item>
+      </el-form>
+
+    </template>
+
+  </el-dialog>
+
+    <!--表格-->
+    <template>
+      <el-table
+              :data="tableData"
+              style="width: 100%"
+              :row-class-name="tableRowClassName"
+              @selection-change="handleSelectionChange"
+      >
+        <el-table-column
+                type="selection"
+                width="55">
+        </el-table-column>
+        <el-table-column
+                type="index"
+                width="50">
+        </el-table-column>
+
+        <el-table-column
+                prop="name"
+                label="姓名"
+                align="center"
+        >
+        </el-table-column>
+
+        <el-table-column
+                prop="gender"
+                label="性别"
+                align="center"
+        >
+        </el-table-column>
+
+        <el-table-column
+                prop="age"
+                align="center"
+                label="年龄">
+        </el-table-column>
+
+        <el-table-column
+                prop="college"
+                align="center"
+                label="学院">
+        </el-table-column>
+
+        <el-table-column
+                prop="major"
+                align="center"
+                label="专业">
+        </el-table-column>
+
+
+        <el-table-column
+                prop="gradeStr"
+                align="center"
+                label="年级">
+        </el-table-column>
+
+
+        <el-table-column
+                align="center"
+                label="操作"
+                width="300px"
+        >
+
+          <template slot-scope="scope">
+            <el-button type="primary" @click="update(scope.$index,scope.row)">修改</el-button>
+
+            <el-button type="info" @click="detail(scope.$index,scope.row)">详情</el-button>
+
+            <el-button type="danger" @click="deleteById(scope.$index,scope.row)">删除</el-button>
+          </template>
+
+
+        </el-table-column>
+
+      </el-table>
+    </template>
+
+    <!--分页工具条-->
+    <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-sizes="[5, 10, 15, 20]"
+            :page-size="5"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="totalCount">
+    </el-pagination>
+
+</div>
+
+<script src="../../static/js/vue.js"></script>
+<script src="../../static/element-ui/lib/index.js"></script>
+<script src="../../static/js/axios-0.18.0.js"></script>
+<link rel="stylesheet" href="../../static/element-ui/lib/theme-chalk/index.css">
+
+
+<script>
+  new Vue({
+    //vue作用区域
+    el: "#app",
+
+    //页面加载完成执行
+    mounted(){
+      this.selectAll();
+    },
+
+    methods: {
+
+      //查询分页数据的方法
+      selectAll(){
+        var _this = this;
+        //当页面加载完成之后的一个函数，发送异步请求，获取数据
+        axios({
+            methods: "post",//查询所以使用get
+            url:"",
+          // "/employee/page/{pageNum}?currentPage="+_this.currentPage+"&&pageSize="+_this.pageSize+""
+            data:this.person
+        }).then(function (resp) {
+            //接收到的那一大堆数据,将数据给到表格模型
+            _this.tableData = resp.data.rows;
+            _this.totalCount = resp.data.totalCount;
+        })
+
+      },
+
+
+      tableRowClassName({row, rowIndex}) {
+        if (rowIndex === 1) {
+          return 'warning-row';
+        } else if (rowIndex === 3) {
+          return 'success-row';
+        }
+        return '';
+      },
+
+
+      // 复选框选中后执行的方法
+      handleSelectionChange(val) {
+        this.multipleSelection = val;
+        // console.log(this.multipleSelection);
+      },
+
+
+      // 查询方法
+      onSubmit() {
+        // var _this = this;
+        // axios({
+        //   method:"post",
+        //   url:"http://localhost:8080/Personnel-management-system/person/FuzzyQueries",
+        //   data:"str="+_this.personTo
+        // }).then(function (resp) {
+        //   console.log(_this.personTo);
+        // }
+        this.selectAll();
+        console.log(this.person);
+      },
+
+
+      // 添加数据
+      addPerson(){
+        // console.log(this.brand);
+        //发送ajax的异步请求，添加数据
+        var _this = this;
+        axios({
+          method:"post",
+          url:"http://localhost:8080/Personnel-management-system/person/add",
+          // 提交的表单数据
+          data:_this.person
+        }).then(function (resp) {
+          //后端返回的成功标识符resp.data;
+          // console.log(_this.person)
+          if (resp.data == "success"){
+            //添加成功
+
+            //关闭窗口
+            _this.dialogVisible = false;
+
+            //再次查询所有数据
+            _this.selectAll();
+
+            //弹出消息提示框
+            _this.$message({
+              message: '恭喜你，添加成功',
+              type: 'success'
+            });
+
+          }
+        })
+      },
+
+
+      //分页
+      handleSizeChange(val) {
+        //重新设置每页显示的条数
+        this.pageSize = val;
+        this.selectAll();
+      },
+
+
+      handleCurrentChange(val) {
+        //重新设置当前页码
+        this.currentPage = val;
+        this.selectAll();
+      },
+
+
+      //完成批量删除
+      deleteByIds(){
+        var _this = this;
+
+        //弹出确认的提示框
+        this.$confirm('此操作将删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          //以后点击确认按钮
+          //发送sjax请求
+          axios({
+            method:"post",
+            url:"http://localhost:8080/brand-case/brand/deleteByIds",
+            // 提交的表单数据
+            data:_this.selectedIds
+          }).then(function (resp) {
+            //后端返回的成功标识符resp.data;
+            if (resp.data == "success"){
+              //删除成功
+
+              //再次查询所有数据
+              _this.selectAll();
+
+              //弹出消息提示框
+              _this.$message({
+                message: '恭喜你，删除成功',
+                type: 'success'
+              });
+
+            }
+          })
+        }).catch(() => {
+          //用户点击取消按钮
+
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+        //创建id数组，从this.multipleSelection中获取即可
+        // console.log("1"+_this.multipleSelection.id)
+        for (let i = 0; i < this.multipleSelection.length; i++) {
+          let selectionElement = this.multipleSelection[i];
+          this.selectedIds[i] = selectionElement.id;
+        }
+
+
+      },
+
+
+      //完成删除
+      deleteById(index,row){
+        var _this = this;
+        //弹出确认的提示框
+        this.$confirm('此操作将删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          //以后点击确认按钮
+          //发送sjax请求
+          axios({
+            method:"post",
+            url:"http://localhost:8080/Personnel-management-system/person/deleteById",
+            // 提交的表单数据
+            data:"id="+(row.id)
+          }).then(function (resp) {
+            //后端返回的成功标识符resp.data;
+            if (resp.data == "success"){
+              //删除成功
+
+              //再次查询所有数据
+              _this.selectAll();
+
+              //弹出消息提示框
+              _this.$message({
+                message: '恭喜你，删除成功',
+                type: 'success'
+              });
+
+            }
+          })
+        }).catch(() => {
+          //用户点击取消按钮
+
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+        console.log(row.id)
+      },
+
+
+      //完成数据修改后发送回服务端
+      update(index,row){
+        this.detail(personSystem,row);
+        this.ww=true;
+      },
+
+      updateTwo(index,row){
+        var _this = this;
+        axios({
+          method:"post",
+          url:"http://localhost:8080/Personnel-management-system/person/update",
+          data:_this.detailedData
+        }).then(function (resp) {
+          // console.log(_this.detailedData);
+          // console.log(resp);
+          if (resp.data == "success"){
+            _this.dialogVisible1 = false;
+
+            _this.selectAll();
+
+            _this.$message({
+              message: '恭喜你，删除成功',
+              type: 'success'
+            });
+          }
+        }).catch(() => {
+          //用户点击取消按钮
+
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+        console.log(row.id)
+      },
+
+
+      //取消修改,刷新页面
+      cancelUpdate(){
+        this.dialogVisible1 = false;
+        //刷新页面
+        this.selectAll();
+
+      },
+
+      //查看详情
+      detail(index,row){
+        this.ww=false;
+        this.dialogVisible1 = true;
+        this.detailedData = row;
+      }
+
+
+      //模型
+    },
+    data() {
+      return {
+
+        detailedData:{
+          name: '',
+          gender: '',
+          age: '',
+          college: "",
+          major: "",
+          hobby:"",
+          remarks:"",
+          grade: ""
+        },
+
+        updatePerson: {
+          name: '',
+          gender: '',
+          age: '',
+          college: "",
+          major: "",
+          hobby:"",
+          remarks:"",
+          grade: ""
+        },
+        ww:true,
+        dialogVisible1:false,
+        dialogVisible2:true,
+        id:'',
+        //每页显示的条数
+        pageSize:5,
+        //总记录数
+        totalCount:100,
+        //被选中的id数组
+        selectedIds:[],
+        // 当前页码
+        currentPage: 1,
+        // 添加数据对话框是否展示的标记
+        dialogVisible: false,
+
+        // 人物数据
+        person: {
+          name: '',
+          gender: '',
+          age: '',
+          college: "",
+          major: "",
+          hobby:"",
+          remarks:"",
+          grade: ""
+        },
+        // 复选框选中数据集合
+        multipleSelection: [],
+        // 表格数据
+        tableData: [{
+          name: '',
+          gender: '',
+          age: '',
+          college: "",
+          major: "",
+          gradeStr: ""
+        }]
+      }
+    }
+  })
+
+</script>
+</body>
+</html>
